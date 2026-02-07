@@ -1,0 +1,44 @@
+import { Job } from '../entities/Job';
+import { JobStatus } from '../enums/JobStatus';
+
+/**
+ * Job Repository Interface
+ *
+ * Defines methods for persisting and retrieving Job entities.
+ */
+export interface IJobRepository {
+  /**
+   * Find job by ID
+   */
+  findById(id: string): Promise<Job | null>;
+
+  /**
+   * Find all jobs by company ID
+   */
+  findByCompanyId(companyId: string): Promise<Job[]>;
+
+  /**
+   * Find all jobs by status
+   */
+  findByStatus(status: JobStatus): Promise<Job[]>;
+
+  /**
+   * Find all open jobs
+   */
+  findAllOpen(): Promise<Job[]>;
+
+  /**
+   * Save a new job
+   */
+  save(job: Job): Promise<void>;
+
+  /**
+   * Update an existing job
+   */
+  update(job: Job): Promise<void>;
+
+  /**
+   * Delete a job
+   */
+  delete(id: string): Promise<void>;
+}
