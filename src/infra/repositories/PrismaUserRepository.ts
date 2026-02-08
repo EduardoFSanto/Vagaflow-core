@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { User } from '../../domain/entities/User';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { Email } from '../../domain/value-objects/Email';
+import { Password } from '../../domain/value-objects/Password';
 import { UserRole } from '../../domain/enums/UserRole';
 
 /**
@@ -43,6 +44,7 @@ export class PrismaUserRepository implements IUserRepository {
       data: {
         id: user.getId(),
         email: user.getEmail().getValue(),
+        passwordHash: user.getPasswordHash().getValue(),
         name: user.getName(),
         role: user.getRole(),
         createdAt: user.getCreatedAt(),
@@ -74,6 +76,7 @@ export class PrismaUserRepository implements IUserRepository {
     return new User({
       id: data.id,
       email: new Email(data.email),
+      passwordHash: Password.fromHash(data.passwordHash),
       name: data.name,
       role: data.role as UserRole,
       createdAt: data.createdAt,
