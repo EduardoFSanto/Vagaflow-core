@@ -274,7 +274,7 @@ MIT License - See LICENSE file for details
 Eduardo Santos
 
 - GitHub: [@EduardoFSanto](https://github.com/EduardoFSanto)
-- Email: your.email@example.com
+- Email: farias.eduardo@icloud.com
 
 ## Acknowledgments
 

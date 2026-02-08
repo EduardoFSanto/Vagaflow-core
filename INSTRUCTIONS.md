@@ -1,90 +1,97 @@
-# Project Instructions
+---
 
-## Tech Stack
+## Current Implementation Status
 
-- **Node.js**
-- **Fastify** (API framework)
-- **TypeScript**
-- **Domain-Driven Design (DDD)** approach
+### ✅ Completed (v1.0.0)
+
+**Domain Layer:**
+- Enums: UserRole, ApplicationStatus, JobStatus
+- Value Objects: Email, JobTitle
+- Entities: User, Company, Candidate, Job, Application
+- Domain Errors: DomainError, ValidationError, UnauthorizedError, NotFoundError, ConflictError
+- Repository Interfaces: IUserRepository, ICompanyRepository, ICandidateRepository, IJobRepository, IApplicationRepository
+
+**Application Layer:**
+- DTOs: CreateUserDTO, CreateApplicationDTO, UpdateApplicationStatusDTO
+- Use Cases: CreateUser, CreateCandidate, CreateCompany, CreateJob, CreateApplication, AcceptApplication, RejectApplication
+
+**Infrastructure Layer:**
+- Database: PostgreSQL + Prisma ORM (schema, migrations)
+- Repositories: Prisma implementations (all 5 repositories)
+- HTTP Server: Fastify (configured with CORS, error handling)
+- Controllers: UserController, CandidateController, CompanyController, JobController, ApplicationController
+- Routes: All CRUD endpoints registered
+- Middlewares: Error handler (domain errors → HTTP status codes)
+
+**API Endpoints:**
+- POST /api/users
+- POST /api/candidates
+- POST /api/companies
+- POST /api/jobs
+- POST /api/applications
+- PATCH /api/applications/:id/accept
+- PATCH /api/applications/:id/reject
+- GET /health
 
 ---
 
-## Core Concepts
+## Next Steps (Priority Order)
 
-### Users & Roles
+### High Priority
 
-- Every **Application** must be created by a **User**.
-- A **User** can have roles. One important role is **Company**.
-- Only users with the **Company** role can **accept or reject** an application.
+1. **Authentication & Authorization**
+   - Implement JWT authentication
+   - Add login/register endpoints
+   - Create auth middleware to protect routes
+   - Hash passwords (bcrypt)
 
-> ⚠️ Rule: An **Application cannot exist without a User**. If this happens, the database logic breaks because ownership is undefined.
+2. **GET Endpoints (Read Operations)**
+   - GET /api/jobs (list all open jobs)
+   - GET /api/jobs/:id (get job details)
+   - GET /api/applications (list by candidate or company)
+   - GET /api/users/:id (get user profile)
+   - Add pagination and filtering
 
----
+3. **API Documentation**
+   - Add Swagger/OpenAPI documentation
+   - Document all request/response schemas
 
-### Application
+### Medium Priority
 
-- An **Application** represents how a **candidate presents themselves** to a company for a listed job.
-- It is the bridge between:
-  - The **candidate (user)**
-  - The **job vacancy**
-  - The **company**
+4. **Testing**
+   - Unit tests for domain entities and value objects
+   - Unit tests for use cases
+   - Integration tests for API endpoints
+   - Test coverage > 80%
 
-An application:
+5. **Additional Use Cases**
+   - UpdateJob (edit job details)
+   - CloseJob / ReopenJob
+   - UpdateCandidate (edit resume)
+   - UpdateCompany (edit company details)
+   - DeleteJob (soft delete)
 
-- Starts with status: `PENDING`
-- Can be changed only by the **Company** to:
-  - `ACCEPTED`
-  - `REJECTED`
+### Low Priority (Future)
 
----
+6. **Deployment**
+   - Docker containerization
+   - CI/CD with GitHub Actions
+   - Deploy to Railway/Render/Fly.io
 
-## Business Rules (Domain First)
-
-The flow must always follow this order:
-
-1. **Domain rules first**
-   - Validate permissions (who can do what)
-   - Validate required entities (User, Company, Job)
-   - Enforce invariants (no application without user)
-
-2. **Data validation**
-   - Check database consistency
-   - Validate IDs and relations
-
-3. **Frontend behavior**
-   - Show form only if domain allows it
-   - Show success or error messages based on domain result
-
----
-
-## Application Lifecycle
-
-1. User applies to a job
-2. Application is created with status `PENDING`
-3. Company reviews the application
-4. Company either:
-   - Accepts → status `ACCEPTED`
-   - Rejects → status `REJECTED`
+7. **Advanced Features**
+   - File upload (resume PDF)
+   - Email notifications
+   - WebSocket for real-time updates
+   - Search and filters
+   - Analytics dashboard
 
 ---
 
-## API Design Guidelines
+## Important Notes for AI Assistant
 
-- Controllers should be **thin**
-- Business logic lives in **domain services / use cases**
-- Repositories handle persistence only
-- No business rules inside routes
-
----
-
-## Notes
-
-- The domain model is the source of truth
-- Frontend should never bypass domain rules
-- If domain changes, API and frontend must adapt — never the opposite
-
----
-
-## Status
-
-✅ Ready to start the project
+- All domain rules are enforced in entities and use cases
+- Never bypass domain validation
+- Always use repository interfaces (not Prisma directly in use cases)
+- Error handling is centralized in errorHandler middleware
+- Follow existing patterns when adding new features
+- Maintain clean architecture boundaries
