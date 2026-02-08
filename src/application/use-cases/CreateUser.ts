@@ -1,6 +1,7 @@
 import { User } from '../../domain/entities/User';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { Email } from '../../domain/value-objects/Email';
+import { Password } from '../../domain/value-objects/Password';
 import { ConflictError } from '../../domain/errors/ConflictError';
 import { ValidationError } from '../../domain/errors/ValidationError';
 import { CreateUserDTO } from '../dtos/CreateUserDTO';
@@ -11,6 +12,7 @@ import { randomUUID } from 'crypto';
  *
  * Business Rules:
  * - Email must be unique
+ * - Password must be hashed before storage
  * - Role must be CANDIDATE or COMPANY
  */
 export class CreateUserUseCase {
@@ -29,18 +31,22 @@ export class CreateUserUseCase {
       throw new ConflictError('Email already registered');
     }
 
-    // 4. Create user entity
+    // 4. Hash password
+    const passwordHash = await Password.create(dto.password);
+
+    // 5. Create user entity
     const user = new User({
       id: randomUUID(),
       email,
+      passwordHash,
       name: dto.name,
       role: dto.role,
     });
 
-    // 5. Persist user
+    // 6. Persist user
     await this.userRepository.save(user);
 
-    // 6. Return created user
+    // 7. Return created user
     return user;
   }
 

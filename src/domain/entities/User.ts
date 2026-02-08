@@ -1,5 +1,6 @@
 import { UserRole } from '../enums/UserRole';
 import { Email } from '../value-objects/Email';
+import { Password } from '../value-objects/Password';
 
 /**
  * User Entity (Aggregate Root)
@@ -9,12 +10,14 @@ import { Email } from '../value-objects/Email';
  * Business Rules:
  * - Every user has a unique ID
  * - Email must be unique across the system
+ * - Password must be hashed (never stored in plain text)
  * - Role is immutable (cannot change after creation)
  * - Role determines permissions (CANDIDATE or COMPANY)
  */
 export class User {
   private readonly id: string;
   private readonly email: Email;
+  private readonly passwordHash: Password;
   private readonly role: UserRole;
   private name: string;
   private readonly createdAt: Date;
@@ -23,6 +26,7 @@ export class User {
   constructor(props: {
     id: string;
     email: Email;
+    passwordHash: Password;
     role: UserRole;
     name: string;
     createdAt?: Date;
@@ -32,6 +36,7 @@ export class User {
 
     this.id = props.id;
     this.email = props.email;
+    this.passwordHash = props.passwordHash;
     this.role = props.role;
     this.name = props.name;
     this.createdAt = props.createdAt ?? new Date();
@@ -44,6 +49,7 @@ export class User {
   private validate(props: {
     id: string;
     email: Email;
+    passwordHash: Password;
     role: UserRole;
     name: string;
   }): void {
@@ -62,15 +68,23 @@ export class User {
     if (props.name.trim().length > 100) {
       throw new Error('User name cannot exceed 100 characters');
     }
+
+    if (!props.passwordHash) {
+      throw new Error('Password hash cannot be empty');
+    }
   }
 
-  // Getters (imutável para ID, email, role, createdAt)
+  // Getters (imutável para ID, email, passwordHash, role, createdAt)
   public getId(): string {
     return this.id;
   }
 
   public getEmail(): Email {
     return this.email;
+  }
+
+  public getPasswordHash(): Password {
+    return this.passwordHash;
   }
 
   public getRole(): UserRole {
@@ -103,6 +117,14 @@ export class User {
    */
   public isCompany(): boolean {
     return this.role === UserRole.COMPANY;
+  }
+
+  /**
+   * Validate password against stored hash
+   * Used during authentication
+   */
+  public async validatePassword(plainPassword: string): Promise<boolean> {
+    return await this.passwordHash.compare(plainPassword);
   }
 
   /**
