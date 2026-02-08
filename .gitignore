@@ -52,3 +52,4 @@ temp/
 .parcel-cache/
 .eslintcache
 .node_repl_historyKs
+/src/generated/prisma
