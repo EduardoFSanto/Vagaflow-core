@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateCompanyUseCase } from '../../../application/use-cases/CreateCompany';
-import { getPrismaClient } from '../../database/prisma/client';
+import { prisma } from '../../database/prisma/client';
 import { PrismaCompanyRepository } from '../../repositories/PrismaCompanyRepository';
 import { PrismaUserRepository } from '../../repositories/PrismaUserRepository';
 
@@ -12,7 +12,6 @@ export class CompanyController {
       description?: string;
     };
 
-    const prisma = getPrismaClient();
     const companyRepository = new PrismaCompanyRepository(prisma);
     const userRepository = new PrismaUserRepository(prisma);
 

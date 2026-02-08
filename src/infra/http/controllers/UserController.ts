@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateUserUseCase } from '../../../application/use-cases/CreateUser';
-import { getPrismaClient } from '../../database/prisma/client';
+import { prisma } from '../../database/prisma/client';
 import { PrismaUserRepository } from '../../repositories/PrismaUserRepository';
 import { UserRole } from '../../../domain/enums/UserRole';
 
@@ -13,7 +13,6 @@ export class UserController {
       password: string;
     };
 
-    const prisma = getPrismaClient();
     const userRepository = new PrismaUserRepository(prisma);
 
     const useCase = new CreateUserUseCase(userRepository);

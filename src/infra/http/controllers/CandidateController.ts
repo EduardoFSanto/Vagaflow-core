@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateCandidateUseCase } from '../../../application/use-cases/CreateCandidate';
-import { getPrismaClient } from '../../database/prisma/client';
+import { prisma } from '../../database/prisma/client';
 import { PrismaCandidateRepository } from '../../repositories/PrismaCandidateRepository';
 import { PrismaUserRepository } from '../../repositories/PrismaUserRepository';
 
@@ -11,7 +11,6 @@ export class CandidateController {
       resume?: string;
     };
 
-    const prisma = getPrismaClient();
     const candidateRepository = new PrismaCandidateRepository(prisma);
     const userRepository = new PrismaUserRepository(prisma);
 

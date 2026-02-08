@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateApplicationUseCase } from '../../../application/use-cases/CreateApplication';
 import { AcceptApplicationUseCase } from '../../../application/use-cases/AcceptApplication';
 import { RejectApplicationUseCase } from '../../../application/use-cases/RejectApplication';
-import { getPrismaClient } from '../../database/prisma/client';
+import { prisma } from '../../database/prisma/client';
 import { PrismaApplicationRepository } from '../../repositories/PrismaApplicationRepository';
 import { PrismaCandidateRepository } from '../../repositories/PrismaCandidateRepository';
 import { PrismaJobRepository } from '../../repositories/PrismaJobRepository';
@@ -24,7 +24,6 @@ export class ApplicationController {
     };
 
     // Initialize repositories
-    const prisma = getPrismaClient();
     const applicationRepository = new PrismaApplicationRepository(prisma);
     const candidateRepository = new PrismaCandidateRepository(prisma);
     const jobRepository = new PrismaJobRepository(prisma);
@@ -60,7 +59,6 @@ export class ApplicationController {
     const { companyId } = request.body as { companyId: string };
 
     // Initialize repositories
-    const prisma = getPrismaClient();
     const applicationRepository = new PrismaApplicationRepository(prisma);
     const jobRepository = new PrismaJobRepository(prisma);
 
@@ -91,7 +89,6 @@ export class ApplicationController {
     const { companyId } = request.body as { companyId: string };
 
     // Initialize repositories
-    const prisma = getPrismaClient();
     const applicationRepository = new PrismaApplicationRepository(prisma);
     const jobRepository = new PrismaJobRepository(prisma);
 

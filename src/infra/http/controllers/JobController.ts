@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateJobUseCase } from '../../../application/use-cases/CreateJob';
-import { getPrismaClient } from '../../database/prisma/client';
+import { prisma } from '../../database/prisma/client';
 import { PrismaJobRepository } from '../../repositories/PrismaJobRepository';
 import { PrismaCompanyRepository } from '../../repositories/PrismaCompanyRepository';
 
@@ -12,7 +12,6 @@ export class JobController {
       description: string;
     };
 
-    const prisma = getPrismaClient();
     const jobRepository = new PrismaJobRepository(prisma);
     const companyRepository = new PrismaCompanyRepository(prisma);
 
