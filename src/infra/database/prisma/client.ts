@@ -5,23 +5,15 @@ import { PrismaClient } from '@prisma/client';
  *
  * Ensures only one instance of PrismaClient is created
  */
-let prisma: PrismaClient;
+const prisma = new PrismaClient({
+  log:
+    process.env.NODE_ENV === 'development'
+      ? ['query', 'error', 'warn']
+      : ['error'],
+});
 
-export function getPrismaClient(): PrismaClient {
-  if (!prisma) {
-    prisma = new PrismaClient({
-      log:
-        process.env.NODE_ENV === 'development'
-          ? ['query', 'error', 'warn']
-          : ['error'],
-    });
-  }
-
-  return prisma;
-}
+export { prisma };
 
 export async function disconnectPrisma(): Promise<void> {
-  if (prisma) {
-    await prisma.$disconnect();
-  }
+  await prisma.$disconnect();
 }

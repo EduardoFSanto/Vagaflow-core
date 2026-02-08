@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { authRoutes } from './auth.routes';
 import { applicationRoutes } from './application.routes';
 import { userRoutes } from './user.routes';
 import { candidateRoutes } from './candidate.routes';
@@ -13,6 +14,9 @@ export async function routes(fastify: FastifyInstance) {
   fastify.get('/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
+
+  // Auth routes (public)
+  await fastify.register(authRoutes, { prefix: '/api/auth' });
 
   // API routes
   await fastify.register(userRoutes, { prefix: '/api' });
