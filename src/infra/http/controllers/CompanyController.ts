@@ -3,11 +3,21 @@ import { CreateCompanyUseCase } from '../../../application/use-cases/CreateCompa
 import { prisma } from '../../database/prisma/client';
 import { PrismaCompanyRepository } from '../../repositories/PrismaCompanyRepository';
 import { PrismaUserRepository } from '../../repositories/PrismaUserRepository';
+import { JWTPayload } from '../middlewares/authMiddleware';
+import { UnauthorizedError } from '../../../domain/errors/UnauthorizedError';
 
 export class CompanyController {
   async create(request: FastifyRequest, reply: FastifyReply) {
-    const { userId, companyName, description } = request.body as {
-      userId: string;
+    // Get authenticated user from JWT
+    const user = request.user as JWTPayload;
+
+    // Only COMPANY role can create company profile
+    if (user.role !== 'COMPANY') {
+      throw new UnauthorizedError('Only companies can create company profile');
+    }
+
+    // Get required data from body
+    const { companyName, description } = request.body as {
       companyName: string;
       description?: string;
     };
@@ -17,7 +27,12 @@ export class CompanyController {
 
     const useCase = new CreateCompanyUseCase(companyRepository, userRepository);
 
-    const company = await useCase.execute(userId, companyName, description);
+    // Use userId from JWT token (secure!)
+    const company = await useCase.execute(
+      user.userId,
+      companyName,
+      description
+    );
 
     return reply.status(201).send({
       id: company.getId(),
