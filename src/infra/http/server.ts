@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import jwt from '@fastify/jwt';
 import { routes } from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import { disconnectPrisma } from '../database/prisma/client';
@@ -18,6 +19,11 @@ async function buildServer() {
   await fastify.register(cors, {
     origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
     credentials: true,
+  });
+
+  // Register JWT
+  await fastify.register(jwt, {
+    secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
   });
 
   // Register routes
@@ -58,11 +64,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-process.on('SIGTERM', async () => {
-  console.log('\n🛑 Shutting down gracefully...');
-  await disconnectPrisma();
-  process.exit(0);
-});
-
-// Start server
 start();
