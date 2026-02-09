@@ -1,5 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateJobUseCase } from '../../../application/use-cases/CreateJob';
+import { ListJobsUseCase } from '../../../application/use-cases/ListJobs';
+import { GetJobByIdUseCase } from '../../../application/use-cases/GetJobById';
 import { prisma } from '../../database/prisma/client';
 import { PrismaJobRepository } from '../../repositories/PrismaJobRepository';
 import { PrismaCompanyRepository } from '../../repositories/PrismaCompanyRepository';
@@ -40,6 +42,50 @@ export class JobController {
     const job = await useCase.execute(company.getId(), title, description);
 
     return reply.status(201).send({
+      id: job.getId(),
+      companyId: job.getCompanyId(),
+      title: job.getTitle().getValue(),
+      description: job.getDescription(),
+      status: job.getStatus(),
+      createdAt: job.getCreatedAt(),
+    });
+  }
+
+  /**
+   * GET /jobs
+   * List all open jobs
+   */
+  async list(_request: FastifyRequest, reply: FastifyReply) {
+    const jobRepository = new PrismaJobRepository(prisma);
+    const useCase = new ListJobsUseCase(jobRepository);
+
+    const jobs = await useCase.execute();
+
+    return reply.status(200).send(
+      jobs.map((job) => ({
+        id: job.getId(),
+        companyId: job.getCompanyId(),
+        title: job.getTitle().getValue(),
+        description: job.getDescription(),
+        status: job.getStatus(),
+        createdAt: job.getCreatedAt(),
+      }))
+    );
+  }
+
+  /**
+   * GET /jobs/:id
+   * Get job by ID
+   */
+  async getById(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+
+    const jobRepository = new PrismaJobRepository(prisma);
+    const useCase = new GetJobByIdUseCase(jobRepository);
+
+    const job = await useCase.execute(id);
+
+    return reply.status(200).send({
       id: job.getId(),
       companyId: job.getCompanyId(),
       title: job.getTitle().getValue(),

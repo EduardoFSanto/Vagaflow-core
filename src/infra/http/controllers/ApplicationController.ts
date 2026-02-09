@@ -2,6 +2,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { CreateApplicationUseCase } from '../../../application/use-cases/CreateApplication';
 import { AcceptApplicationUseCase } from '../../../application/use-cases/AcceptApplication';
 import { RejectApplicationUseCase } from '../../../application/use-cases/RejectApplication';
+import { ListMyApplicationsUseCase } from '../../../application/use-cases/ListMyApplications';
+import { ListJobApplicationsUseCase } from '../../../application/use-cases/ListJobApplications';
 import { prisma } from '../../database/prisma/client';
 import { PrismaApplicationRepository } from '../../repositories/PrismaApplicationRepository';
 import { PrismaCandidateRepository } from '../../repositories/PrismaCandidateRepository';
@@ -163,5 +165,96 @@ export class ApplicationController {
       createdAt: application.getCreatedAt(),
       updatedAt: application.getUpdatedAt(),
     });
+  }
+
+  /**
+   * List my applications (for candidates)
+   * GET /applications/my-applications
+   */
+  async listMyApplications(request: FastifyRequest, reply: FastifyReply) {
+    // Get authenticated user from JWT
+    const user = request.user as JWTPayload;
+
+    // Only CANDIDATE role can view their applications
+    if (user.role !== 'CANDIDATE') {
+      throw new UnauthorizedError(
+        'Only candidates can view their applications'
+      );
+    }
+
+    // Initialize repositories
+    const applicationRepository = new PrismaApplicationRepository(prisma);
+    const candidateRepository = new PrismaCandidateRepository(prisma);
+
+    // Find candidate by userId from JWT
+    const candidate = await candidateRepository.findByUserId(user.userId);
+    if (!candidate) {
+      throw new NotFoundError(
+        'Candidate profile not found. Create a candidate profile first.'
+      );
+    }
+
+    // Execute use case
+    const useCase = new ListMyApplicationsUseCase(applicationRepository);
+    const applications = await useCase.execute(candidate.getId());
+
+    return reply.status(200).send(
+      applications.map((app) => ({
+        id: app.getId(),
+        candidateId: app.getCandidateId(),
+        jobId: app.getJobId(),
+        status: app.getStatus(),
+        createdAt: app.getCreatedAt(),
+        updatedAt: app.getUpdatedAt(),
+      }))
+    );
+  }
+
+  /**
+   * List applications for a job (for companies)
+   * GET /jobs/:jobId/applications
+   */
+  async listJobApplications(request: FastifyRequest, reply: FastifyReply) {
+    // Get authenticated user from JWT
+    const user = request.user as JWTPayload;
+
+    // Only COMPANY role can view job applications
+    if (user.role !== 'COMPANY') {
+      throw new UnauthorizedError('Only companies can view job applications');
+    }
+
+    const { jobId } = request.params as { jobId: string };
+
+    // Initialize repositories
+    const applicationRepository = new PrismaApplicationRepository(prisma);
+    const jobRepository = new PrismaJobRepository(prisma);
+    const companyRepository = new PrismaCompanyRepository(prisma);
+
+    // Find company by userId from JWT
+    const company = await companyRepository.findByUserId(user.userId);
+    if (!company) {
+      throw new NotFoundError(
+        'Company profile not found. Create a company profile first.'
+      );
+    }
+
+    // Execute use case
+    const useCase = new ListJobApplicationsUseCase(
+      applicationRepository,
+      jobRepository
+    );
+
+    const applications = await useCase.execute(jobId, company.getId());
+
+    return reply.status(200).send(
+      applications.map((app) => ({
+        id: app.getId(),
+        candidateId: app.getCandidateId(),
+        jobId: app.getJobId(),
+        status: app.getStatus(),
+        createdAt: app.getCreatedAt(),
+        updatedAt: app.getUpdatedAt(),
+      }))
+    );
   }
 }

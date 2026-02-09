@@ -19,6 +19,15 @@ export async function applicationRoutes(fastify: FastifyInstance) {
     controller.create.bind(controller)
   );
 
+  // List my applications - only CANDIDATE
+  fastify.get(
+    '/applications/my-applications',
+    {
+      preHandler: [authMiddleware],
+    },
+    controller.listMyApplications.bind(controller)
+  );
+
   // Accept application - only COMPANY can accept
   fastify.patch(
     '/applications/:id/accept',
@@ -35,5 +44,14 @@ export async function applicationRoutes(fastify: FastifyInstance) {
       preHandler: [authMiddleware],
     },
     controller.reject.bind(controller)
+  );
+
+  // List applications for a job - only COMPANY (owner of the job)
+  fastify.get(
+    '/jobs/:jobId/applications',
+    {
+      preHandler: [authMiddleware],
+    },
+    controller.listJobApplications.bind(controller)
   );
 }
