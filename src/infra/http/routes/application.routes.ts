@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { ApplicationController } from '../controllers/ApplicationController';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 /**
  * Application Routes
@@ -7,12 +8,32 @@ import { ApplicationController } from '../controllers/ApplicationController';
 export async function applicationRoutes(fastify: FastifyInstance) {
   const controller = new ApplicationController();
 
-  // Create application
-  fastify.post('/applications', controller.create.bind(controller));
+  // Protected routes - all require authentication
 
-  // Accept application
-  fastify.patch('/applications/:id/accept', controller.accept.bind(controller));
+  // Create application - only CANDIDATE can apply
+  fastify.post(
+    '/applications',
+    {
+      preHandler: [authMiddleware],
+    },
+    controller.create.bind(controller)
+  );
 
-  // Reject application
-  fastify.patch('/applications/:id/reject', controller.reject.bind(controller));
+  // Accept application - only COMPANY can accept
+  fastify.patch(
+    '/applications/:id/accept',
+    {
+      preHandler: [authMiddleware],
+    },
+    controller.accept.bind(controller)
+  );
+
+  // Reject application - only COMPANY can reject
+  fastify.patch(
+    '/applications/:id/reject',
+    {
+      preHandler: [authMiddleware],
+    },
+    controller.reject.bind(controller)
+  );
 }

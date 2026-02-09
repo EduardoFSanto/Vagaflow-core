@@ -6,6 +6,10 @@ import { prisma } from '../../database/prisma/client';
 import { PrismaApplicationRepository } from '../../repositories/PrismaApplicationRepository';
 import { PrismaCandidateRepository } from '../../repositories/PrismaCandidateRepository';
 import { PrismaJobRepository } from '../../repositories/PrismaJobRepository';
+import { PrismaCompanyRepository } from '../../repositories/PrismaCompanyRepository';
+import { JWTPayload } from '../middlewares/authMiddleware';
+import { UnauthorizedError } from '../../../domain/errors/UnauthorizedError';
+import { NotFoundError } from '../../../domain/errors/NotFoundError';
 
 /**
  * Application Controller
@@ -18,8 +22,16 @@ export class ApplicationController {
    * POST /applications
    */
   async create(request: FastifyRequest, reply: FastifyReply) {
-    const { candidateId, jobId } = request.body as {
-      candidateId: string;
+    // Get authenticated user from JWT
+    const user = request.user as JWTPayload;
+
+    // Only CANDIDATE role can apply to jobs
+    if (user.role !== 'CANDIDATE') {
+      throw new UnauthorizedError('Only candidates can apply to jobs');
+    }
+
+    // Get jobId from body
+    const { jobId } = request.body as {
       jobId: string;
     };
 
@@ -28,6 +40,14 @@ export class ApplicationController {
     const candidateRepository = new PrismaCandidateRepository(prisma);
     const jobRepository = new PrismaJobRepository(prisma);
 
+    // Find candidate by userId from JWT
+    const candidate = await candidateRepository.findByUserId(user.userId);
+    if (!candidate) {
+      throw new NotFoundError(
+        'Candidate profile not found. Create a candidate profile first.'
+      );
+    }
+
     // Execute use case
     const useCase = new CreateApplicationUseCase(
       applicationRepository,
@@ -35,8 +55,9 @@ export class ApplicationController {
       jobRepository
     );
 
+    // Use candidateId from the authenticated user's candidate profile
     const application = await useCase.execute({
-      candidateId,
+      candidateId: candidate.getId(),
       jobId,
     });
 
@@ -55,12 +76,28 @@ export class ApplicationController {
    * PATCH /applications/:id/accept
    */
   async accept(request: FastifyRequest, reply: FastifyReply) {
+    // Get authenticated user from JWT
+    const user = request.user as JWTPayload;
+
+    // Only COMPANY role can accept applications
+    if (user.role !== 'COMPANY') {
+      throw new UnauthorizedError('Only companies can accept applications');
+    }
+
     const { id } = request.params as { id: string };
-    const { companyId } = request.body as { companyId: string };
 
     // Initialize repositories
     const applicationRepository = new PrismaApplicationRepository(prisma);
     const jobRepository = new PrismaJobRepository(prisma);
+    const companyRepository = new PrismaCompanyRepository(prisma);
+
+    // Find company by userId from JWT
+    const company = await companyRepository.findByUserId(user.userId);
+    if (!company) {
+      throw new NotFoundError(
+        'Company profile not found. Create a company profile first.'
+      );
+    }
 
     // Execute use case
     const useCase = new AcceptApplicationUseCase(
@@ -68,7 +105,8 @@ export class ApplicationController {
       jobRepository
     );
 
-    const application = await useCase.execute(id, companyId);
+    // Use companyId from the authenticated user's company
+    const application = await useCase.execute(id, company.getId());
 
     return reply.status(200).send({
       id: application.getId(),
@@ -85,12 +123,28 @@ export class ApplicationController {
    * PATCH /applications/:id/reject
    */
   async reject(request: FastifyRequest, reply: FastifyReply) {
+    // Get authenticated user from JWT
+    const user = request.user as JWTPayload;
+
+    // Only COMPANY role can reject applications
+    if (user.role !== 'COMPANY') {
+      throw new UnauthorizedError('Only companies can reject applications');
+    }
+
     const { id } = request.params as { id: string };
-    const { companyId } = request.body as { companyId: string };
 
     // Initialize repositories
     const applicationRepository = new PrismaApplicationRepository(prisma);
     const jobRepository = new PrismaJobRepository(prisma);
+    const companyRepository = new PrismaCompanyRepository(prisma);
+
+    // Find company by userId from JWT
+    const company = await companyRepository.findByUserId(user.userId);
+    if (!company) {
+      throw new NotFoundError(
+        'Company profile not found. Create a company profile first.'
+      );
+    }
 
     // Execute use case
     const useCase = new RejectApplicationUseCase(
@@ -98,7 +152,8 @@ export class ApplicationController {
       jobRepository
     );
 
-    const application = await useCase.execute(id, companyId);
+    // Use companyId from the authenticated user's company
+    const application = await useCase.execute(id, company.getId());
 
     return reply.status(200).send({
       id: application.getId(),
