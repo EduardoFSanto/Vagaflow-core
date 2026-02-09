@@ -15,6 +15,11 @@ export async function routes(fastify: FastifyInstance) {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
+  // Test error handler
+  fastify.get('/test-error', async () => {
+    throw new Error('Test error - should be 500');
+  });
+
   // Auth routes (public)
   await fastify.register(authRoutes, { prefix: '/api/auth' });
 

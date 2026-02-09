@@ -4,7 +4,8 @@ import { AuthenticateUserUseCase } from '../../../application/use-cases/Authenti
 import { PrismaUserRepository } from '../../repositories/PrismaUserRepository';
 import { prisma } from '../../database/prisma/client';
 import { UserRole } from '../../../domain/enums/UserRole';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
+import { ValidationError } from '../../../domain/errors/ValidationError';
 
 /**
  * Auth Controller
@@ -27,7 +28,17 @@ export class AuthController {
       }),
     });
 
-    const data = registerSchema.parse(request.body);
+    // Parse and validate request body
+    let data;
+    try {
+      data = registerSchema.parse(request.body);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const message = error.errors[0]?.message || 'Validation failed';
+        throw new ValidationError(message);
+      }
+      throw error;
+    }
 
     // Execute use case
     const userRepository = new PrismaUserRepository(prisma);
@@ -65,7 +76,17 @@ export class AuthController {
       password: z.string().min(1, 'Password is required'),
     });
 
-    const data = loginSchema.parse(request.body);
+    // Parse and validate request body
+    let data;
+    try {
+      data = loginSchema.parse(request.body);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const message = error.errors[0]?.message || 'Validation failed';
+        throw new ValidationError(message);
+      }
+      throw error;
+    }
 
     // Execute use case
     const userRepository = new PrismaUserRepository(prisma);

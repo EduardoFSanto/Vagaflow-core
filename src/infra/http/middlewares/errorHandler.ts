@@ -1,70 +1,58 @@
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
-import { DomainError } from '../../../domain/errors/DomainError';
 import { ValidationError } from '../../../domain/errors/ValidationError';
-import { UnauthorizedError } from '../../../domain/errors/UnauthorizedError';
-import { NotFoundError } from '../../../domain/errors/NotFoundError';
 import { ConflictError } from '../../../domain/errors/ConflictError';
+import { NotFoundError } from '../../../domain/errors/NotFoundError';
+import { UnauthorizedError } from '../../../domain/errors/UnauthorizedError';
 
 /**
- * Global Error Handler Middleware
- *
- * Converts domain errors to appropriate HTTP responses
+ * Global error handler for Fastify
  */
-export async function errorHandler(
+export function errorHandler(
   error: FastifyError,
   _request: FastifyRequest,
-  reply: FastifyReply
+  _reply: FastifyReply,
 ) {
-  // Domain errors
+  console.error('Error caught by errorHandler:', {
+    type: error.constructor.name,
+    message: error.message,
+    statusCode: error.statusCode || 500,
+  });
+
+  // ValidationError -> 400 Bad Request
   if (error instanceof ValidationError) {
-    return reply.status(400).send({
-      error: 'Validation Error',
+    return _reply.status(400).send({
+      error: 'Bad Request',
       message: error.message,
     });
   }
 
+  // UnauthorizedError -> 401 Unauthorized
   if (error instanceof UnauthorizedError) {
-    return reply.status(403).send({
+    return _reply.status(401).send({
       error: 'Unauthorized',
       message: error.message,
     });
   }
 
+  // NotFoundError -> 404 Not Found
   if (error instanceof NotFoundError) {
-    return reply.status(404).send({
+    return _reply.status(404).send({
       error: 'Not Found',
       message: error.message,
     });
   }
 
+  // ConflictError -> 409 Conflict
   if (error instanceof ConflictError) {
-    return reply.status(409).send({
+    return _reply.status(409).send({
       error: 'Conflict',
       message: error.message,
     });
   }
 
-  if (error instanceof DomainError) {
-    return reply.status(400).send({
-      error: 'Domain Error',
-      message: error.message,
-    });
-  }
-
-  // Fastify validation errors
-  if (error.validation) {
-    return reply.status(400).send({
-      error: 'Validation Error',
-      message: 'Invalid request data',
-      details: error.validation,
-    });
-  }
-
-  // Unknown errors (bugs)
-  console.error('Unexpected error:', error);
-
-  return reply.status(500).send({
+  // Default: 500 Internal Server Error
+  return _reply.status(error.statusCode || 500).send({
     error: 'Internal Server Error',
-    message: 'An unexpected error occurred',
+    message: error.message || 'Something went wrong',
   });
 }

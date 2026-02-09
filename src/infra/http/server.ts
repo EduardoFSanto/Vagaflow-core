@@ -26,11 +26,11 @@ async function buildServer() {
     secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
   });
 
+  // ✅ Register error handler BEFORE routes
+  fastify.setErrorHandler(errorHandler);
+
   // Register routes
   await fastify.register(routes);
-
-  // Register error handler
-  fastify.setErrorHandler(errorHandler);
 
   return fastify;
 }
