@@ -8,6 +8,7 @@ import { PrismaCompanyRepository } from '../../repositories/PrismaCompanyReposit
 import { JWTPayload } from '../middlewares/authMiddleware';
 import { UnauthorizedError } from '../../../domain/errors/UnauthorizedError';
 import { NotFoundError } from '../../../domain/errors/NotFoundError';
+import { validatePaginationParams } from '../../../shared/types/Pagination';
 
 export class JobController {
   async create(request: FastifyRequest, reply: FastifyReply) {
@@ -52,25 +53,35 @@ export class JobController {
   }
 
   /**
-   * GET /jobs
-   * List all open jobs
+   * GET /jobs?page=1&limit=10
+   * List all open jobs with pagination
    */
-  async list(_request: FastifyRequest, reply: FastifyReply) {
+  async list(request: FastifyRequest, reply: FastifyReply) {
+    // Get pagination params from query string
+    const { page, limit } = request.query as {
+      page?: number;
+      limit?: number;
+    };
+
+    // Validate and sanitize pagination params
+    const paginationParams = validatePaginationParams(page, limit);
+
     const jobRepository = new PrismaJobRepository(prisma);
     const useCase = new ListJobsUseCase(jobRepository);
 
-    const jobs = await useCase.execute();
+    const result = await useCase.execute(paginationParams);
 
-    return reply.status(200).send(
-      jobs.map((job) => ({
+    return reply.status(200).send({
+      data: result.data.map((job) => ({
         id: job.getId(),
         companyId: job.getCompanyId(),
         title: job.getTitle().getValue(),
         description: job.getDescription(),
         status: job.getStatus(),
         createdAt: job.getCreatedAt(),
-      }))
-    );
+      })),
+      pagination: result.pagination,
+    });
   }
 
   /**
