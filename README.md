@@ -1,3 +1,8 @@
+# 🎯 **README.md PROFISSIONAL SEM EMOJIS**
+
+Substitui o README.md completo por:
+
+```markdown
 # VagaFlow Core
 
 > Professional job application platform API built with Domain-Driven Design (DDD) and Clean Architecture
@@ -9,7 +14,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -22,50 +27,53 @@
 - [Database Schema](#database-schema)
 - [Error Handling](#error-handling)
 - [Development](#development)
+- [Project Status](#project-status)
 - [Author](#author)
+- [License](#license)
 
-## 🎯 Overview
+## Overview
 
 VagaFlow Core is a production-ready RESTful API that connects job seekers (candidates) with employers (companies). The platform enables candidates to browse and apply for job openings while allowing companies to post vacancies and manage applications efficiently.
 
-**Key Highlights:**
+### Key Highlights
 
-- 🏗️ **Clean Architecture** - Separation of concerns with clear boundaries
-- 🎨 **Domain-Driven Design** - Business logic at the core
-- 🔒 **JWT Authentication** - Secure, stateless authentication
-- 📊 **Pagination Support** - Efficient data retrieval with metadata
-- 📚 **Interactive API Docs** - Swagger/OpenAPI documentation
-- 🛡️ **Type Safety** - Full TypeScript with strict mode
-- ⚡ **High Performance** - Fastify framework with async/await
-- 🔐 **Role-Based Access** - CANDIDATE and COMPANY roles with protected routes
+- Clean Architecture with separation of concerns and clear boundaries
+- Domain-Driven Design with business logic at the core
+- JWT-based authentication with secure, stateless token management
+- Pagination support for efficient data retrieval with metadata
+- Interactive API documentation via Swagger/OpenAPI
+- Full TypeScript implementation with strict type safety
+- High performance web server using Fastify framework
+- Role-based access control with CANDIDATE and COMPANY roles
 
-## 🏗️ Architecture
+## Architecture
 
 This project follows **Domain-Driven Design (DDD)** and **Clean Architecture** principles, ensuring maintainability, testability, and scalability.
 
 ### Layered Structure
-
 ```
+
 src/
-├── domain/                 # Core business logic (framework-agnostic)
-│   ├── entities/           # Business entities (User, Job, Application)
-│   ├── value-objects/      # Immutable values (Email, JobTitle, Password)
-│   ├── enums/              # Domain enumerations (UserRole, ApplicationStatus)
-│   ├── errors/             # Domain-specific errors
-│   └── repositories/       # Repository interfaces (contracts)
+├── domain/ # Core business logic (framework-agnostic)
+│ ├── entities/ # Business entities (User, Job, Application)
+│ ├── value-objects/ # Immutable values (Email, JobTitle, Password)
+│ ├── enums/ # Domain enumerations (UserRole, ApplicationStatus)
+│ ├── errors/ # Domain-specific errors
+│ └── repositories/ # Repository interfaces (contracts)
 │
-├── application/            # Use cases and application logic
-│   ├── use-cases/          # Business use cases (CreateJob, AcceptApplication)
-│   └── dtos/               # Data Transfer Objects
+├── application/ # Use cases and application logic
+│ ├── use-cases/ # Business use cases (CreateJob, AcceptApplication)
+│ └── dtos/ # Data Transfer Objects
 │
-├── infra/                  # External frameworks and tools
-│   ├── database/           # Prisma ORM configuration
-│   ├── http/               # Fastify server, routes, controllers, middlewares
-│   └── repositories/       # Repository implementations (Prisma)
+├── infra/ # External frameworks and tools
+│ ├── database/ # Prisma ORM configuration
+│ ├── http/ # Fastify server, routes, controllers, middlewares
+│ └── repositories/ # Repository implementations (Prisma)
 │
-└── shared/                 # Shared utilities and types
-    ├── types/              # Common types (Pagination)
-    └── utils/              # Utility functions
+└── shared/ # Shared utilities and types
+├── types/ # Common types (Pagination)
+└── utils/ # Utility functions
+
 ```
 
 ### Design Patterns
@@ -75,23 +83,23 @@ src/
 - **Factory Pattern** - Object creation
 - **Strategy Pattern** - Algorithm encapsulation (error handling)
 
-## ✨ Features
+## Features
 
-### 🔐 Authentication & Authorization
+### Authentication & Authorization
 
 - JWT-based authentication with bcrypt password hashing
 - Role-based access control (RBAC)
 - Protected routes with middleware validation
 - Token expiration and refresh handling
 
-### 👤 User Management
+### User Management
 
 - User registration with email validation
 - CANDIDATE or COMPANY role assignment
 - Immutable role after creation
 - Unique email constraint
 
-### 🎓 Candidate Features
+### Candidate Features
 
 - Profile creation linked to user account
 - Browse open job vacancies with pagination
@@ -99,7 +107,7 @@ src/
 - View personal application history
 - Track application status (APPLIED → ACCEPTED/REJECTED)
 
-### 🏢 Company Features
+### Company Features
 
 - Company profile creation
 - Post job vacancies with detailed descriptions
@@ -108,69 +116,70 @@ src/
 - Accept or reject candidate applications
 - Authorization checks (companies can only manage their own jobs)
 
-### 📊 Advanced Features
+### Advanced Features
 
 - **Pagination** - Efficient data retrieval with metadata (page, limit, total, totalPages)
-- **Filtering** - Query parameters for data filtering (`?page=1&limit=10`)
+- **Filtering** - Query parameters for data filtering
 - **Error Handling** - Standardized error responses with proper HTTP status codes
 - **API Documentation** - Interactive Swagger UI at `/docs`
 - **Health Check** - Endpoint for monitoring server status
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Category           | Technology       | Version | Purpose                       |
-| ------------------ | ---------------- | ------- | ----------------------------- |
-| **Runtime**        | Node.js          | 24.x    | JavaScript runtime            |
-| **Language**       | TypeScript       | 5.7     | Type-safe development         |
-| **Framework**      | Fastify          | 5.2     | High-performance web server   |
-| **Database**       | PostgreSQL       | 18.x    | Relational database           |
-| **ORM**            | Prisma           | 6.19    | Type-safe database client     |
-| **Validation**     | Zod              | 3.24    | Schema validation             |
-| **Authentication** | @fastify/jwt     | 9.0     | JWT token handling            |
-| **Password**       | bcrypt           | 5.1     | Secure password hashing       |
-| **Documentation**  | @fastify/swagger | Latest  | OpenAPI/Swagger docs          |
-| **CORS**           | @fastify/cors    | Latest  | Cross-origin resource sharing |
+| Category | Technology | Version | Purpose |
+|----------|-----------|---------|---------|
+| **Runtime** | Node.js | 24.x | JavaScript runtime |
+| **Language** | TypeScript | 5.7 | Type-safe development |
+| **Framework** | Fastify | 5.2 | High-performance web server |
+| **Database** | PostgreSQL | 18.x | Relational database |
+| **ORM** | Prisma | 6.19 | Type-safe database client |
+| **Validation** | Zod | 3.24 | Schema validation |
+| **Authentication** | @fastify/jwt | 9.0 | JWT token handling |
+| **Password** | bcrypt | 5.1 | Secure password hashing |
+| **Documentation** | @fastify/swagger | Latest | OpenAPI/Swagger docs |
+| **CORS** | @fastify/cors | Latest | Cross-origin resource sharing |
 
-## 📚 API Documentation
+## API Documentation
 
-Interactive API documentation is available via Swagger UI:
+Interactive API documentation is available via Swagger UI at:
 
 ```
+
 http://localhost:3333/docs
-```
 
-**Features:**
+````
 
+Features include:
 - Try out all endpoints directly in the browser
 - View request/response schemas
 - Test authentication with JWT tokens
 - Explore organized endpoints by category (Auth, Jobs, Applications)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- **Node.js** v18 or higher ([Download](https://nodejs.org/))
-- **PostgreSQL** v13 or higher ([Download](https://www.postgresql.org/download/))
-- **npm** or **yarn** package manager
-- **Git** for version control
+- Node.js v18 or higher
+- PostgreSQL v13 or higher
+- npm or yarn package manager
+- Git for version control
 
 ### Installation
 
-1. **Clone the repository**
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/EduardoFSanto/Vagaflow-core.git
 cd vagaflow-core
-```
+````
 
-2. **Install dependencies**
+**2. Install dependencies**
 
 ```bash
 npm install
 ```
 
-3. **Configure environment variables**
+**3. Configure environment variables**
 
 Create a .env file in the root directory:
 
@@ -190,19 +199,19 @@ JWT_EXPIRES_IN=7d
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
-4. **Run database migrations**
+**4. Run database migrations**
 
 ```bash
 npx prisma migrate dev
 ```
 
-5. **Generate Prisma Client**
+**5. Generate Prisma Client**
 
 ```bash
 npx prisma generate
 ```
 
-6. **Start the development server**
+**6. Start the development server**
 
 ```bash
 npm run dev
@@ -210,13 +219,13 @@ npm run dev
 
 The server will start at `http://localhost:3333`
 
-**Available URLs:**
+Available URLs:
 
 - API: `http://localhost:3333/api`
 - Health Check: `http://localhost:3333/health`
 - API Docs: `http://localhost:3333/docs`
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Authentication
 
@@ -261,11 +270,11 @@ The server will start at `http://localhost:3333`
 | PATCH  | `/api/applications/:id/accept`      | Accept application    | Protected (COMPANY, owner only) |
 | PATCH  | `/api/applications/:id/reject`      | Reject application    | Protected (COMPANY, owner only) |
 
-### Examples
+### Request Examples
 
 **Register a new candidate:**
 
-```bash
+```http
 POST /api/auth/register
 Content-Type: application/json
 
@@ -279,7 +288,7 @@ Content-Type: application/json
 
 **List jobs with pagination:**
 
-```bash
+```http
 GET /api/jobs?page=1&limit=10
 ```
 
@@ -306,30 +315,44 @@ GET /api/jobs?page=1&limit=10
 }
 ```
 
-## 📜 Business Rules
+**Apply to a job:**
+
+```http
+POST /api/applications
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "jobId": "uuid"
+}
+```
+
+## Business Rules
 
 ### User & Authentication
 
-- ✅ Email must be unique across all users
-- ✅ User role (CANDIDATE or COMPANY) is immutable after creation
-- ✅ Passwords are hashed using bcrypt (salt rounds: 10)
-- ✅ JWT tokens expire after configured duration (default: 7 days)
+- Email must be unique across all users
+- User role (CANDIDATE or COMPANY) is immutable after creation
+- Passwords are hashed using bcrypt (salt rounds: 10)
+- JWT tokens expire after configured duration (default: 7 days)
 
 ### Candidate Rules
 
-- ✅ Candidate profile requires an associated user account
-- ✅ A candidate can apply to a job only once
-- ✅ Candidates can only apply to jobs with status OPEN
-- ✅ Candidates can view their own applications
+- Candidate profile requires an associated user account
+- A candidate can apply to a job only once
+- Candidates can only apply to jobs with status OPEN
+- Candidates can view their own applications
 
 ### Company Rules
 
-- ✅ Company profile requires an associated user account
-- ✅ Only companies can create job postings
-- ✅ Companies can only view/manage applications for their own jobs
-- ✅ Job status can be OPEN or CLOSED
+- Company profile requires an associated user account
+- Only companies can create job postings
+- Companies can only view/manage applications for their own jobs
+- Job status can be OPEN or CLOSED
 
 ### Application Workflow
+
+The application follows a strict state machine:
 
 1. Candidate applies to an OPEN job → Status: **APPLIED**
 2. Company reviews the application
@@ -338,12 +361,14 @@ GET /api/jobs?page=1&limit=10
 
 **Status Transition Rules:**
 
-- ✅ APPLIED → ACCEPTED (allowed)
-- ✅ APPLIED → REJECTED (allowed)
-- ❌ ACCEPTED → REJECTED (forbidden)
-- ❌ REJECTED → ACCEPTED (forbidden)
+| From     | To       | Allowed |
+| -------- | -------- | ------- |
+| APPLIED  | ACCEPTED | Yes     |
+| APPLIED  | REJECTED | Yes     |
+| ACCEPTED | REJECTED | No      |
+| REJECTED | ACCEPTED | No      |
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Main Tables
 
@@ -395,7 +420,7 @@ GET /api/jobs?page=1&limit=10
 - Company 1:N Jobs
 - Job N:M Candidates (through Applications)
 
-## ⚠️ Error Handling
+## Error Handling
 
 The API provides standardized error responses with appropriate HTTP status codes:
 
@@ -417,7 +442,7 @@ The API provides standardized error responses with appropriate HTTP status codes
 }
 ```
 
-## 🧪 Development
+## Development
 
 ### Project Scripts
 
@@ -447,26 +472,46 @@ npm run lint
 npx prisma studio
 ```
 
-### Code Quality
+### Code Quality Tools
 
 - **ESLint** - Linting with recommended rules
 - **Prettier** - Code formatting
 - **TypeScript Strict Mode** - Maximum type safety
-- **Git Hooks** - Pre-commit validation (planned)
+- **Husky** - Git hooks for pre-commit validation (planned)
 
 ### Development Principles
 
-- ✅ **SOLID Principles** - Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
-- ✅ **DDD Patterns** - Entities, Value Objects, Repositories, Use Cases
-- ✅ **Clean Code** - Meaningful names, small functions, clear intent
-- ✅ **Immutability** - Value objects and critical properties are immutable
-- ✅ **Dependency Injection** - Loose coupling between layers
+This project adheres to industry-standard development practices:
 
-## 📦 Project Status
+**SOLID Principles**
+
+- Single Responsibility Principle
+- Open/Closed Principle
+- Liskov Substitution Principle
+- Interface Segregation Principle
+- Dependency Inversion Principle
+
+**DDD Patterns**
+
+- Entities with business logic
+- Value Objects for immutable values
+- Repositories for data access
+- Use Cases for application logic
+- Domain Events (planned)
+
+**Clean Code Practices**
+
+- Meaningful variable and function names
+- Small, focused functions
+- Clear separation of concerns
+- Comprehensive error handling
+- Immutability where appropriate
+
+## Project Status
 
 **Current Version:** 2.0.0
 
-### ✅ Completed Features
+### Completed Features
 
 - [x] Domain layer with entities, value objects, and business rules
 - [x] Application layer with use cases and DTOs
@@ -482,21 +527,22 @@ npx prisma studio
 - [x] Password hashing with bcrypt
 - [x] CORS configuration
 
-### 🚧 Planned Features
+### Planned Features
 
 - [ ] Unit tests for domain entities and use cases
 - [ ] Integration tests for API endpoints
 - [ ] Docker and Docker Compose setup
 - [ ] CI/CD pipeline with GitHub Actions
 - [ ] Rate limiting and request throttling
-- [ ] Structured logging (Winston/Pino)
+- [ ] Structured logging with Winston or Pino
 - [ ] Email notifications
 - [ ] File upload support (company logos, candidate resumes)
 - [ ] Advanced search and filtering
-- [ ] Caching layer (Redis)
+- [ ] Caching layer with Redis
 - [ ] Monitoring and observability (Grafana, Prometheus)
+- [ ] GraphQL API (optional alternative to REST)
 
-## 👨‍💻 Author
+## Author
 
 **Eduardo Santos**
 
@@ -504,22 +550,21 @@ npx prisma studio
 - Email: farias.eduardo@icloud.com
 - LinkedIn: [Eduardo Santos](https://linkedin.com/in/eduardo-santos)
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 This project was built as a comprehensive learning exercise to demonstrate:
 
 - Enterprise-grade backend architecture
-- Domain-Driven Design implementation
-- Clean Architecture principles
-- TypeScript best practices
-- Modern Node.js development patterns
-- RESTful API design
-- Authentication and authorization patterns
+- Domain-Driven Design implementation in TypeScript
+- Clean Architecture principles with clear layer separation
+- Modern Node.js development patterns and best practices
+- RESTful API design with proper HTTP semantics
+- Authentication and authorization patterns using JWT
+- Database design with proper normalization and constraints
+- Professional API documentation with OpenAPI/Swagger
 
----
-
-**Built with using TypeScript, Fastify, and Prisma**
+**Built with TypeScript, Fastify, Prisma, and PostgreSQL**
