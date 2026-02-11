@@ -1,6 +1,8 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
+import swagger from '@fastify/swagger';
+import swaggerUI from '@fastify/swagger-ui';
 import { routes } from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import { disconnectPrisma } from '../database/prisma/client';
@@ -26,6 +28,49 @@ async function buildServer() {
     secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
   });
 
+  // Register Swagger
+  await fastify.register(swagger, {
+    swagger: {
+      info: {
+        title: 'VagaFlow API',
+        description:
+          'Professional job application platform API built with DDD and Clean Architecture',
+        version: '1.0.0',
+      },
+      host: 'localhost:3333',
+      schemes: ['http'],
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      tags: [
+        { name: 'Auth', description: 'Authentication endpoints' },
+        { name: 'Users', description: 'User management' },
+        { name: 'Candidates', description: 'Candidate profiles' },
+        { name: 'Companies', description: 'Company profiles' },
+        { name: 'Jobs', description: 'Job postings' },
+        { name: 'Applications', description: 'Job applications' },
+      ],
+      securityDefinitions: {
+        Bearer: {
+          type: 'apiKey',
+          name: 'Authorization',
+          in: 'header',
+          description: 'Enter your JWT token in the format: Bearer {token}',
+        },
+      },
+    },
+  });
+
+  // Register Swagger UI
+  await fastify.register(swaggerUI, {
+    routePrefix: '/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: false,
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header,
+  });
+
   // ✅ Register error handler BEFORE routes
   fastify.setErrorHandler(errorHandler);
 
@@ -49,6 +94,7 @@ async function start() {
 
     console.log(`🚀 Server running at http://localhost:${port}`);
     console.log(`📚 Health check: http://localhost:${port}/health`);
+    console.log(`📖 API Docs: http://localhost:${port}/docs`);
   } catch (error) {
     console.error('Error starting server:', error);
     process.exit(1);
