@@ -1,8 +1,3 @@
-# 🎯 **README.md PROFISSIONAL SEM EMOJIS**
-
-Substitui o README.md completo por:
-
-```markdown
 # VagaFlow Core
 
 > Professional job application platform API built with Domain-Driven Design (DDD) and Clean Architecture
@@ -51,6 +46,7 @@ VagaFlow Core is a production-ready RESTful API that connects job seekers (candi
 This project follows **Domain-Driven Design (DDD)** and **Clean Architecture** principles, ensuring maintainability, testability, and scalability.
 
 ### Layered Structure
+
 ```
 
 src/
@@ -126,18 +122,18 @@ src/
 
 ## Tech Stack
 
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Runtime** | Node.js | 24.x | JavaScript runtime |
-| **Language** | TypeScript | 5.7 | Type-safe development |
-| **Framework** | Fastify | 5.2 | High-performance web server |
-| **Database** | PostgreSQL | 18.x | Relational database |
-| **ORM** | Prisma | 6.19 | Type-safe database client |
-| **Validation** | Zod | 3.24 | Schema validation |
-| **Authentication** | @fastify/jwt | 9.0 | JWT token handling |
-| **Password** | bcrypt | 5.1 | Secure password hashing |
-| **Documentation** | @fastify/swagger | Latest | OpenAPI/Swagger docs |
-| **CORS** | @fastify/cors | Latest | Cross-origin resource sharing |
+| Category           | Technology       | Version | Purpose                       |
+| ------------------ | ---------------- | ------- | ----------------------------- |
+| **Runtime**        | Node.js          | 24.x    | JavaScript runtime            |
+| **Language**       | TypeScript       | 5.7     | Type-safe development         |
+| **Framework**      | Fastify          | 5.2     | High-performance web server   |
+| **Database**       | PostgreSQL       | 18.x    | Relational database           |
+| **ORM**            | Prisma           | 6.19    | Type-safe database client     |
+| **Validation**     | Zod              | 3.24    | Schema validation             |
+| **Authentication** | @fastify/jwt     | 9.0     | JWT token handling            |
+| **Password**       | bcrypt           | 5.1     | Secure password hashing       |
+| **Documentation**  | @fastify/swagger | Latest  | OpenAPI/Swagger docs          |
+| **CORS**           | @fastify/cors    | Latest  | Cross-origin resource sharing |
 
 ## API Documentation
 
@@ -147,9 +143,10 @@ Interactive API documentation is available via Swagger UI at:
 
 http://localhost:3333/docs
 
-````
+```
 
 Features include:
+
 - Try out all endpoints directly in the browser
 - View request/response schemas
 - Test authentication with JWT tokens
@@ -171,7 +168,7 @@ Features include:
 ```bash
 git clone https://github.com/EduardoFSanto/Vagaflow-core.git
 cd vagaflow-core
-````
+```
 
 **2. Install dependencies**
 
